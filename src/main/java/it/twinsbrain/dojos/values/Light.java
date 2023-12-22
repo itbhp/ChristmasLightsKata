@@ -1,18 +1,25 @@
 package it.twinsbrain.dojos.values;
 
 public class Light {
-    private boolean isOn;
+  private boolean isOn;
 
-    public void turnOn(){
-        this.isOn = true;
+  public void turnOn() {
+    this.isOn = true;
+  }
+
+  public boolean isOn() {
+    return isOn;
+  }
+
+  public void turnOff() {
+    this.isOn = false;
+  }
+
+  public void toggle() {
+    if (this.isOn) {
+      turnOff();
+    } else {
+      turnOn();
     }
-
-
-    public boolean isOn() {
-        return isOn;
-    }
-
-    public void turnOff() {
-        this.isOn = false;
-    }
+  }
 }

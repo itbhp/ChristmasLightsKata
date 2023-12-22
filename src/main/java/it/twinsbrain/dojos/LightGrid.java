@@ -1,6 +1,7 @@
 package it.twinsbrain.dojos;
 
 import it.twinsbrain.dojos.commands.Command;
+import it.twinsbrain.dojos.commands.ToggleCommand;
 import it.twinsbrain.dojos.commands.TurnOffCommand;
 import it.twinsbrain.dojos.commands.TurnOnCommand;
 import it.twinsbrain.dojos.values.From;
@@ -32,6 +33,7 @@ public class LightGrid {
     switch (command) {
       case TurnOnCommand turnOnCommand -> executeAction(turnOnCommand.from(), turnOnCommand.to(), Light::turnOn);
       case TurnOffCommand turnOffCommand -> executeAction(turnOffCommand.from(), turnOffCommand.to(), Light::turnOff);
+      case ToggleCommand toggleCommand -> executeAction(toggleCommand.from(), toggleCommand.to(), Light::toggle);
     }
   }
 

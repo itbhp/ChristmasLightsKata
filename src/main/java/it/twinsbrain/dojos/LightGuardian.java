@@ -1,6 +1,7 @@
 package it.twinsbrain.dojos;
 
 
+import it.twinsbrain.dojos.commands.ToggleCommand;
 import it.twinsbrain.dojos.commands.TurnOffCommand;
 import it.twinsbrain.dojos.commands.TurnOnCommand;
 import it.twinsbrain.dojos.values.From;
@@ -10,6 +11,7 @@ import java.util.regex.Pattern;
 public class LightGuardian {
   private final Pattern turnOnPattern = Pattern.compile("turn on (\\d),(\\d) through (\\d),(\\d)");
   private final Pattern turnOffPattern = Pattern.compile("turn off (\\d),(\\d) through (\\d),(\\d)");
+  private final Pattern togglePattern = Pattern.compile("toggle (\\d),(\\d) through (\\d),(\\d)");
   private final LightGrid lightGrid = new LightGrid();
 
   public void receive(String commandString) {
@@ -28,6 +30,14 @@ public class LightGuardian {
       var x2 = Integer.parseInt(turnOffMatcher.group(3));
       var y2 = Integer.parseInt(turnOffMatcher.group(4));
       lightGrid.accept(new TurnOffCommand(From.of(x1, y1), To.of(x2, y2)));
+    }
+    var toggleMatcher = togglePattern.matcher(commandString);
+    if (toggleMatcher.matches()) {
+      var x1 = Integer.parseInt(toggleMatcher.group(1));
+      var y1 = Integer.parseInt(toggleMatcher.group(2));
+      var x2 = Integer.parseInt(toggleMatcher.group(3));
+      var y2 = Integer.parseInt(toggleMatcher.group(4));
+      lightGrid.accept(new ToggleCommand(From.of(x1, y1), To.of(x2, y2)));
     }
   }
 

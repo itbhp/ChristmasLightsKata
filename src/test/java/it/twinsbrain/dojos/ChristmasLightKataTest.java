@@ -22,20 +22,24 @@ public class ChristmasLightKataTest {
   })
   void lightOnAfterTurnOnCommand(int x1, int y1, int x2, int y2, int expected) {
     var lightGuardian = new LightGuardian();
-
     lightGuardian.receive("turn on %d,%d through %d,%d".formatted(x1, y1, x2, y2));
-
     assertEquals(expected, lightGuardian.howManyLightsOn());
   }
 
   @Test
   void lightsOffAfterTurningOnAndOff() {
-
     var lightGuardian = new LightGuardian();
-
     lightGuardian.receive("turn on 0,2 through 3,3");
     lightGuardian.receive("turn off 0,2 through 0,3");
-
     assertEquals(6, lightGuardian.howManyLightsOn());
+  }
+
+  @Test
+  void lightsOnAfterToggleAndOffAfterToggleAgain() {
+    var lightGuardian = new LightGuardian();
+    lightGuardian.receive("toggle 0,2 through 3,3");
+    assertEquals(8, lightGuardian.howManyLightsOn());
+    lightGuardian.receive("toggle 0,2 through 3,3");
+    assertEquals(0, lightGuardian.howManyLightsOn());
   }
 }
