@@ -11,9 +11,9 @@ public class ChristmasLightKataTest {
   @CsvSource({
           "0,1,0,9,9",
           "0,1,0,3,3",
-//          "1,1,0,3,3",
+          "0,2,3,3,8",
   })
-  void lightOnAfterTurnOnCommandInOneDimension(
+  void lightOnAfterTurnOnCommand(
           int x1, int y1, int x2, int y2, int expected
   ) {
       var lightGuardian  = new LightGuardian();

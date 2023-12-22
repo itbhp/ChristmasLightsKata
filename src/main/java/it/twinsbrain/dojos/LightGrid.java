@@ -30,7 +30,6 @@ public class LightGrid {
   public void accept(Command command) {
     switch (command) {
       case TurnOnCommand turnOnCommand -> turnOn(turnOnCommand.from(), turnOnCommand.to());
-      default -> throw new IllegalArgumentException("Unexpected command: " + command);
     }
   }
 

@@ -1,3 +1,3 @@
 package it.twinsbrain.dojos.commands;
 
-public interface Command {}
+public sealed interface Command permits TurnOnCommand {}
