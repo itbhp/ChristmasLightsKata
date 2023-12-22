@@ -1,6 +1,7 @@
 package it.twinsbrain.dojos;
 
 import it.twinsbrain.dojos.commands.Command;
+import it.twinsbrain.dojos.commands.TurnOffCommand;
 import it.twinsbrain.dojos.commands.TurnOnCommand;
 import it.twinsbrain.dojos.values.From;
 import it.twinsbrain.dojos.values.Light;
@@ -29,7 +30,8 @@ public class LightGrid {
 
   public void accept(Command command) {
     switch (command) {
-      case TurnOnCommand turnOnCommand -> turnOn(turnOnCommand.from(), turnOnCommand.to());
+      case TurnOnCommand turnOnCommand -> executeAction(turnOnCommand.from(), turnOnCommand.to(), Light::turnOn);
+      case TurnOffCommand turnOffCommand -> executeAction(turnOffCommand.from(), turnOffCommand.to(), Light::turnOff);
     }
   }
 
@@ -44,10 +46,6 @@ public class LightGrid {
           }
         });
     return n.get();
-  }
-
-  private void turnOn(From from, To to) {
-    executeAction(from, to, Light::turnOn);
   }
 
   private void executeAction(From from, To to, Consumer<Light> action) {

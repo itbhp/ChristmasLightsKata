@@ -11,4 +11,8 @@ public class Light {
     public boolean isOn() {
         return isOn;
     }
+
+    public void turnOff() {
+        this.isOn = false;
+    }
 }
