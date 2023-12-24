@@ -1,14 +1,14 @@
 package it.twinsbrain.dojos;
 
-import it.twinsbrain.dojos.commands.Command;
-import it.twinsbrain.dojos.commands.ToggleCommand;
-import it.twinsbrain.dojos.commands.TurnOffCommand;
-import it.twinsbrain.dojos.commands.TurnOnCommand;
+import it.twinsbrain.dojos.commands.*;
+import it.twinsbrain.dojos.exception.InvalidCommandException;
+import it.twinsbrain.dojos.parse.CommandMatcher;
 import it.twinsbrain.dojos.values.From;
+import it.twinsbrain.dojos.values.Pair;
 import it.twinsbrain.dojos.values.To;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,19 +33,25 @@ public class LightGuardian {
   }
 
   public void receive(String commandString) {
-    try {
-      var command =
-          chain.stream()
-              .map(commandMatcher -> commandMatcher.match(commandString))
-              .filter(Optional::isPresent)
-              .findFirst()
-              .flatMap(Function.identity())
-              .orElseThrow(IllegalArgumentException::new);
-      lightGrid.accept(command);
-    } catch (IllegalArgumentException e) {
-      System.out.println("invalid command " + commandString);
-      throw e;
-    }
+    var command = parseCommand(commandString);
+    lightGrid.accept(command);
+  }
+
+  private Command parseCommand(String commandString) {
+    return chain.stream()
+        .map(commandMatcher -> commandMatcher.match(commandString))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .findFirst()
+        .orElseThrow(newInvalidCommandExceptionSupplier(commandString));
+  }
+
+  private static Supplier<InvalidCommandException> newInvalidCommandExceptionSupplier(String commandString) {
+    return () -> {
+      String message = "invalid command " + commandString;
+      System.out.println(message);
+      return new InvalidCommandException(message);
+    };
   }
 
   private CommandMatcher createCommandMatcher(Pattern pattern, CommandFactory factory) {
@@ -53,7 +59,7 @@ public class LightGuardian {
       var matcher = pattern.matcher(commandString);
       if (matcher.matches()) {
         var fromToPair = coordinatesFrom(matcher);
-        return Optional.of(factory.create(fromToPair.first, fromToPair.second));
+        return Optional.of(factory.create(fromToPair.first(), fromToPair.second()));
       } else {
         return Optional.empty();
       }
@@ -67,14 +73,4 @@ public class LightGuardian {
     var y2 = Integer.parseInt(matcher.group(4));
     return new Pair<>(From.of(x1, y1), To.of(x2, y2));
   }
-
-  private interface CommandFactory {
-    Command create(From from, To to);
-  }
-
-  private interface CommandMatcher {
-    Optional<Command> match(String commandString);
-  }
-
-  private record Pair<T, U>(T first, U second) {}
 }
