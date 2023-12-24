@@ -1,2 +1,4 @@
 target/
 *.iml
+src/main/resources/input.txt
+src/main/java/it/twinsbrain/dojos/Main.java
