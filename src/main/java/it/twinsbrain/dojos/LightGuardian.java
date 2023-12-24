@@ -17,9 +17,9 @@ public class LightGuardian {
   private final List<CommandMatcher> chain;
 
   public LightGuardian() {
-    var turnOnPattern = Pattern.compile("turn on (\\d),(\\d) through (\\d),(\\d)");
-    var turnOffPattern = Pattern.compile("turn off (\\d),(\\d) through (\\d),(\\d)");
-    var togglePattern = Pattern.compile("toggle (\\d),(\\d) through (\\d),(\\d)");
+    var turnOnPattern = Pattern.compile("turn on (\\d+),(\\d+) through (\\d+),(\\d+)");
+    var turnOffPattern = Pattern.compile("turn off (\\d+),(\\d+) through (\\d+),(\\d+)");
+    var togglePattern = Pattern.compile("toggle (\\d+),(\\d+) through (\\d+),(\\d+)");
 
     var turnOnCommandMatcher = createCommandMatcher(turnOnPattern, TurnOnCommand::new);
     var turnOffCommandMatcher = createCommandMatcher(turnOffPattern, TurnOffCommand::new);
@@ -33,14 +33,19 @@ public class LightGuardian {
   }
 
   public void receive(String commandString) {
-    var command =
-        chain.stream()
-            .map(commandMatcher -> commandMatcher.match(commandString))
-            .filter(Optional::isPresent)
-            .findFirst()
-            .flatMap(Function.identity())
-            .orElseThrow(IllegalArgumentException::new);
-    lightGrid.accept(command);
+    try {
+      var command =
+          chain.stream()
+              .map(commandMatcher -> commandMatcher.match(commandString))
+              .filter(Optional::isPresent)
+              .findFirst()
+              .flatMap(Function.identity())
+              .orElseThrow(IllegalArgumentException::new);
+      lightGrid.accept(command);
+    } catch (IllegalArgumentException e) {
+      System.out.println("invalid command " + commandString);
+      throw e;
+    }
   }
 
   private CommandMatcher createCommandMatcher(Pattern pattern, CommandFactory factory) {
