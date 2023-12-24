@@ -31,8 +31,7 @@ public class LightGuardian {
   }
 
   public void receive(String commandString) {
-    var command = parseCommand(commandString);
-    lightGrid.accept(command);
+    lightGrid.accept(parseCommand(commandString));
   }
 
   private Command parseCommand(String commandString) {
@@ -41,10 +40,10 @@ public class LightGuardian {
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst()
-        .orElseThrow(newInvalidCommandExceptionSupplier(commandString));
+        .orElseThrow(newInvalidCommandException(commandString));
   }
 
-  private static Supplier<InvalidCommandException> newInvalidCommandExceptionSupplier(String commandString) {
+  private static Supplier<InvalidCommandException> newInvalidCommandException(String commandString) {
     return () -> {
       String message = "invalid command " + commandString;
       System.out.println(message);
