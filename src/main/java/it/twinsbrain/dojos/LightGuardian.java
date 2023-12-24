@@ -5,9 +5,13 @@ import static it.twinsbrain.dojos.parse.CommandMatcher.createCommandMatcher;
 import it.twinsbrain.dojos.commands.*;
 import it.twinsbrain.dojos.exception.InvalidCommandException;
 import it.twinsbrain.dojos.parse.CommandMatcher;
+import it.twinsbrain.dojos.values.From;
+import it.twinsbrain.dojos.values.Pair;
+import it.twinsbrain.dojos.values.To;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LightGuardian {
@@ -19,9 +23,9 @@ public class LightGuardian {
     var turnOffPattern = Pattern.compile("turn off (\\d+),(\\d+) through (\\d+),(\\d+)");
     var togglePattern = Pattern.compile("toggle (\\d+),(\\d+) through (\\d+),(\\d+)");
 
-    var turnOnCommandMatcher = createCommandMatcher(turnOnPattern, TurnOnCommand::new);
-    var turnOffCommandMatcher = createCommandMatcher(turnOffPattern, TurnOffCommand::new);
-    var toggleCommandMatcher = createCommandMatcher(togglePattern, ToggleCommand::new);
+    var turnOnCommandMatcher = createCommandMatcher(turnOnPattern, TurnOnCommand::new, LightGuardian::coordinatesFrom);
+    var turnOffCommandMatcher = createCommandMatcher(turnOffPattern, TurnOffCommand::new, LightGuardian::coordinatesFrom);
+    var toggleCommandMatcher = createCommandMatcher(togglePattern, ToggleCommand::new, LightGuardian::coordinatesFrom);
 
     this.chain = List.of(turnOffCommandMatcher, turnOnCommandMatcher, toggleCommandMatcher);
   }
@@ -49,5 +53,13 @@ public class LightGuardian {
       System.out.println(message);
       return new InvalidCommandException(message);
     };
+  }
+
+  private static Pair<From, To> coordinatesFrom(Matcher matcher) {
+    var x1 = Integer.parseInt(matcher.group(1));
+    var y1 = Integer.parseInt(matcher.group(2));
+    var x2 = Integer.parseInt(matcher.group(3));
+    var y2 = Integer.parseInt(matcher.group(4));
+    return new Pair<>(From.of(x1, y1), To.of(x2, y2));
   }
 }
