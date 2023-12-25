@@ -2,15 +2,22 @@ package it.twinsbrain.dojos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 public class ChristmasLightKataTest {
 
+  private LightGuardian lightGuardian;
+
+  @BeforeEach
+  void setUp() {
+    lightGuardian = LightGuardian.newLightGuardian();
+  }
+
   @Test
   void atTheBeginningNoLightsIsOn() {
-    var lightGuardian = new LightGuardian();
     assertEquals(0, lightGuardian.howManyLightsOn());
   }
 
@@ -21,14 +28,12 @@ public class ChristmasLightKataTest {
     "0,2,3,3,8",
   })
   void lightOnAfterTurnOnCommand(int x1, int y1, int x2, int y2, int expected) {
-    var lightGuardian = new LightGuardian();
     lightGuardian.receive("turn on %d,%d through %d,%d".formatted(x1, y1, x2, y2));
     assertEquals(expected, lightGuardian.howManyLightsOn());
   }
 
   @Test
   void lightsOffAfterTurningOnAndOff() {
-    var lightGuardian = new LightGuardian();
     lightGuardian.receive("turn on 0,2 through 3,3");
     lightGuardian.receive("turn off 0,2 through 0,3");
     assertEquals(6, lightGuardian.howManyLightsOn());
@@ -36,7 +41,6 @@ public class ChristmasLightKataTest {
 
   @Test
   void lightsOnAfterToggleAndOffAfterToggleAgain() {
-    var lightGuardian = new LightGuardian();
     lightGuardian.receive("toggle 0,2 through 3,3");
     assertEquals(8, lightGuardian.howManyLightsOn());
     lightGuardian.receive("toggle 0,2 through 3,3");
