@@ -13,7 +13,7 @@ public interface CommandMatcher {
       var matcher = pattern.matcher(commandString);
       if (matcher.matches()) {
         var fromToPair = extractor.extractFrom(matcher);
-        return Optional.of(factory.create(fromToPair.first(), fromToPair.second()));
+        return Optional.of(factory.create(fromToPair._1(), fromToPair._2()));
       } else {
         return Optional.empty();
       }

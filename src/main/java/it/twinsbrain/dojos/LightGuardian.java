@@ -1,18 +1,18 @@
 package it.twinsbrain.dojos;
 
+import static it.twinsbrain.dojos.parse.CommandMatcher.createCommandMatcher;
+
 import it.twinsbrain.dojos.commands.*;
 import it.twinsbrain.dojos.exception.InvalidCommandException;
 import it.twinsbrain.dojos.parse.CommandMatcher;
 import it.twinsbrain.dojos.values.From;
-import it.twinsbrain.dojos.values.Pair;
 import it.twinsbrain.dojos.values.To;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static it.twinsbrain.dojos.parse.CommandMatcher.createCommandMatcher;
+import javaslang.Tuple2;
 
 public class LightGuardian {
   private final LightGrid lightGrid = new LightGrid();
@@ -58,11 +58,11 @@ public class LightGuardian {
     };
   }
 
-  private static Pair<From, To> coordinatesFrom(Matcher matcher) {
+  private static Tuple2<From, To> coordinatesFrom(Matcher matcher) {
     var x1 = Integer.parseInt(matcher.group(1));
     var y1 = Integer.parseInt(matcher.group(2));
     var x2 = Integer.parseInt(matcher.group(3));
     var y2 = Integer.parseInt(matcher.group(4));
-    return new Pair<>(From.of(x1, y1), To.of(x2, y2));
+    return new Tuple2<>(From.of(x1, y1), To.of(x2, y2));
   }
 }
