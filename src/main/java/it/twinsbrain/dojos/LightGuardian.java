@@ -1,6 +1,5 @@
 package it.twinsbrain.dojos;
 
-import static it.twinsbrain.dojos.parse.CommandMatcher.createCommandMatcher;
 
 import it.twinsbrain.dojos.commands.*;
 import it.twinsbrain.dojos.exception.InvalidCommandException;
@@ -12,6 +11,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javaslang.Function3;
 import javaslang.Tuple2;
 
 public class LightGuardian {
@@ -25,10 +25,12 @@ public class LightGuardian {
     var turnOnPattern = Pattern.compile("turn on (\\d+),(\\d+) through (\\d+),(\\d+)");
     var turnOffPattern = Pattern.compile("turn off (\\d+),(\\d+) through (\\d+),(\\d+)");
     var togglePattern = Pattern.compile("toggle (\\d+),(\\d+) through (\\d+),(\\d+)");
-
-    var turnOnCommandMatcher = createCommandMatcher(turnOnPattern, TurnOnCommand::new, LightGuardian::coordinatesFrom);
-    var turnOffCommandMatcher = createCommandMatcher(turnOffPattern, TurnOffCommand::new, LightGuardian::coordinatesFrom);
-    var toggleCommandMatcher = createCommandMatcher(togglePattern, ToggleCommand::new, LightGuardian::coordinatesFrom);
+    var commandMatcherFactory = Function3.of(CommandMatcher::createCommandMatcher)
+            .curried()
+            .apply(LightGuardian::coordinatesFrom);
+    var turnOnCommandMatcher = commandMatcherFactory.apply(turnOnPattern).apply(TurnOnCommand::new);
+    var turnOffCommandMatcher = commandMatcherFactory.apply(turnOffPattern).apply(TurnOffCommand::new);
+    var toggleCommandMatcher = commandMatcherFactory.apply(togglePattern).apply(ToggleCommand::new);
 
     return new LightGuardian(List.of(turnOffCommandMatcher, turnOnCommandMatcher, toggleCommandMatcher));
   }

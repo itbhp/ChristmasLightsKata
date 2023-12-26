@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public interface CommandMatcher {
   Optional<Command> match(String commandString);
 
-  static CommandMatcher createCommandMatcher(Pattern pattern, CommandFactory factory, CoordinatesExtractor extractor) {
+  static CommandMatcher createCommandMatcher(CoordinatesExtractor extractor, Pattern pattern, CommandFactory factory) {
     return commandString -> {
       var matcher = pattern.matcher(commandString);
       if (matcher.matches()) {
