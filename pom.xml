@@ -21,6 +21,8 @@
         <hamcrest.version>2.2</hamcrest.version>
         <jmh.version>1.35</jmh.version>
         <javaslang.version>2.0.6</javaslang.version>
+        <log4j-core.version>2.20.0</log4j-core.version>
+        <log4j-slf4j-impl.version>2.13.3</log4j-slf4j-impl.version>
     </properties>
 
     <dependencies>
@@ -37,6 +39,23 @@
             <version>${javaslang.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j-slf4j-impl.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

@@ -1,6 +1,5 @@
 package it.twinsbrain.dojos;
 
-
 import it.twinsbrain.dojos.commands.*;
 import it.twinsbrain.dojos.exception.InvalidCommandException;
 import it.twinsbrain.dojos.parse.CommandMatcher;
@@ -13,26 +12,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javaslang.Function3;
 import javaslang.Tuple2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LightGuardian {
+  private static final Logger logger = LoggerFactory.getLogger(LightGuardian.class);
   private final LightGrid lightGrid = new LightGrid();
   private final List<CommandMatcher> chain;
 
   private LightGuardian(List<CommandMatcher> chain) {
     this.chain = chain;
   }
-  public static LightGuardian newLightGuardian(){
+
+  public static LightGuardian newLightGuardian() {
     var turnOnPattern = Pattern.compile("turn on (\\d+),(\\d+) through (\\d+),(\\d+)");
     var turnOffPattern = Pattern.compile("turn off (\\d+),(\\d+) through (\\d+),(\\d+)");
     var togglePattern = Pattern.compile("toggle (\\d+),(\\d+) through (\\d+),(\\d+)");
-    var commandMatcherFactory = Function3.of(CommandMatcher::createCommandMatcher)
+    var commandMatcherFactory =
+        Function3.of(CommandMatcher::createCommandMatcher)
             .curried()
             .apply(LightGuardian::coordinatesFrom);
     var turnOnCommandMatcher = commandMatcherFactory.apply(turnOnPattern).apply(TurnOnCommand::new);
-    var turnOffCommandMatcher = commandMatcherFactory.apply(turnOffPattern).apply(TurnOffCommand::new);
+    var turnOffCommandMatcher =
+        commandMatcherFactory.apply(turnOffPattern).apply(TurnOffCommand::new);
     var toggleCommandMatcher = commandMatcherFactory.apply(togglePattern).apply(ToggleCommand::new);
 
-    return new LightGuardian(List.of(turnOffCommandMatcher, turnOnCommandMatcher, toggleCommandMatcher));
+    return new LightGuardian(
+        List.of(turnOffCommandMatcher, turnOnCommandMatcher, toggleCommandMatcher));
   }
 
   public int howManyLightsOn() {
@@ -54,8 +60,8 @@ public class LightGuardian {
 
   private static Supplier<InvalidCommandException> newInvalidCommandException(String commandString) {
     return () -> {
-      String message = "invalid command " + commandString;
-      System.out.println(message);
+      var message = "invalid command \"" + commandString + "\"";
+      logger.info(message);
       return new InvalidCommandException(message);
     };
   }
