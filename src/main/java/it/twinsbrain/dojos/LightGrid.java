@@ -14,11 +14,12 @@ public class LightGrid {
 
   private final From startPoint;
   private final To endPoint;
-  private final Light[][] grid = new Light[1000][1000];
+  private final Light[][] grid;
 
   public LightGrid() {
     int numberOfRows = 1000;
     int numberOfColumns = 1000;
+    grid = new Light[numberOfColumns][numberOfRows];
     for (int i = 0; i < numberOfRows; i++) {
       grid[i] = new Light[numberOfColumns];
       for (int j = 0; j < numberOfColumns; j++) {

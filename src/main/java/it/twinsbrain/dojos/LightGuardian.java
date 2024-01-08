@@ -58,7 +58,8 @@ public class LightGuardian {
         .orElseThrow(newInvalidCommandException(commandString));
   }
 
-  private static Supplier<InvalidCommandException> newInvalidCommandException(String commandString) {
+  private static Supplier<InvalidCommandException> newInvalidCommandException(
+      String commandString) {
     return () -> {
       var message = "invalid command \"" + commandString + "\"";
       logger.info(message);
