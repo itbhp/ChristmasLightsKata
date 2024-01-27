@@ -55,8 +55,7 @@ public class LightGuardian {
     private Command parseCommand(String commandString) {
         return chain.stream()
                 .map(commandMatcher -> commandMatcher.match(commandString))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .findFirst()
                 .orElseThrow(newInvalidCommandException(commandString));
     }
