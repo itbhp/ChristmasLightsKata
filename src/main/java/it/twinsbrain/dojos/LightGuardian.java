@@ -2,7 +2,7 @@ package it.twinsbrain.dojos;
 
 import it.twinsbrain.dojos.commands.*;
 import it.twinsbrain.dojos.exception.InvalidCommandException;
-import it.twinsbrain.dojos.parse.CommandMatcher;
+import it.twinsbrain.dojos.parse.CommandParser;
 import it.twinsbrain.dojos.values.From;
 import it.twinsbrain.dojos.values.To;
 
@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 public class LightGuardian {
     private static final Logger logger = LoggerFactory.getLogger(LightGuardian.class);
     private final LightGrid lightGrid = new LightGrid();
-    private final List<CommandMatcher> chain;
+    private final List<CommandParser> chain;
 
-    private LightGuardian(List<CommandMatcher> chain) {
+    private LightGuardian(List<CommandParser> chain) {
         this.chain = chain;
     }
 
@@ -30,17 +30,17 @@ public class LightGuardian {
         var turnOnPattern = Pattern.compile("turn on (\\d+),(\\d+) through (\\d+),(\\d+)");
         var turnOffPattern = Pattern.compile("turn off (\\d+),(\\d+) through (\\d+),(\\d+)");
         var togglePattern = Pattern.compile("toggle (\\d+),(\\d+) through (\\d+),(\\d+)");
-        var commandMatcherFactory =
-                Function3.of(CommandMatcher::createCommandMatcher)
+        var commandParserFactory =
+                Function3.of(CommandParser::createCommandParser)
                         .curried()
                         .apply(LightGuardian::coordinatesFrom);
-        var turnOnCommandMatcher = commandMatcherFactory.apply(turnOnPattern).apply(TurnOnCommand::new);
-        var turnOffCommandMatcher =
-                commandMatcherFactory.apply(turnOffPattern).apply(TurnOffCommand::new);
-        var toggleCommandMatcher = commandMatcherFactory.apply(togglePattern).apply(ToggleCommand::new);
+        var turnOnCommandParser = commandParserFactory.apply(turnOnPattern).apply(TurnOnCommand::new);
+        var turnOffCommandParser =
+                commandParserFactory.apply(turnOffPattern).apply(TurnOffCommand::new);
+        var toggleCommandParser = commandParserFactory.apply(togglePattern).apply(ToggleCommand::new);
 
         return new LightGuardian(
-                List.of(turnOffCommandMatcher, turnOnCommandMatcher, toggleCommandMatcher)
+                List.of(turnOffCommandParser, turnOnCommandParser, toggleCommandParser)
         );
     }
 
@@ -54,7 +54,7 @@ public class LightGuardian {
 
     private Command parseCommand(String commandString) {
         return chain.stream()
-                .map(commandMatcher -> commandMatcher.match(commandString))
+                .map(commandParser -> commandParser.parse(commandString))
                 .flatMap(Optional::stream)
                 .findFirst()
                 .orElseThrow(newInvalidCommandException(commandString));

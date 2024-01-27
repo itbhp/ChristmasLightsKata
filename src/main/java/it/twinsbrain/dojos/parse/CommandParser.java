@@ -6,10 +6,10 @@ import it.twinsbrain.dojos.commands.CommandFactory;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public interface CommandMatcher {
-    Optional<Command> match(String commandString);
+public interface CommandParser {
+    Optional<Command> parse(String commandString);
 
-    static CommandMatcher createCommandMatcher(
+    static CommandParser createCommandParser(
             CoordinatesExtractor coordinatesFinder,
             Pattern pattern,
             CommandFactory factory
